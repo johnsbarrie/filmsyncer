@@ -2,12 +2,10 @@ class BackUp
 
     def initialize (config)
         @config=config
-        
     end
 
     def start(mountedDrives)
         @mountedDrives=mountedDrives
-        puts @mountedDrives
         backUpNetworkToLocal()
         backUpLocalToExternal()
     end

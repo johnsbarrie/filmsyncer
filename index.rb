@@ -10,11 +10,11 @@ config = YAML::load_file("env.config")
 networkdrives = NetworkDrives.new(config)
 networkdrives.start
 
-#backup = BackUp.new(config)
-#backup.start(networkdrives.mountedDrives)
+backup = BackUp.new(config)
+backup.start(networkdrives.mountedDrives)
 
-#encodefilm = EncodeFilms.new(config)
-#encodefilm.start
+encodefilm = EncodeFilms.new(config)
+encodefilm.start(networkdrives.mountedDrives)
 =begin
 =end
 #backup.syncToWeb
