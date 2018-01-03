@@ -34,7 +34,7 @@ class BackUp
     end
 
     def syncToWeb()
-        puts 'rsync -azv ./data/encodedshots'
-        #rsync -azv ./data/encodedshots ssh://latraversee:latraversee@nodeserver`
+        `rsync -azv --delete #{@config['encodedshots_path']}/ #{@config['web_shot_path']}/`
+        `rsync -azv --delete #{@config['thumbnails_path']}/ #{@config['web_thumbnail_path']}/`
     end
 end
