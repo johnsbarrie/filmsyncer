@@ -1,7 +1,6 @@
 module CommandRunner
   
   def runExe(cmd, timeoutDelay)
-    
     begin
       Timeout::timeout(timeoutDelay) { 
       return `#{cmd}`
@@ -10,4 +9,5 @@ module CommandRunner
       exit 1
     end
   end
+  
 end

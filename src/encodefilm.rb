@@ -1,6 +1,6 @@
-
 require 'ostruct'
 require 'pathname'
+
 class EncodeFilms
     
     def initialize(config)
@@ -9,16 +9,16 @@ class EncodeFilms
         @encodedShots=[]
     end
 
-    def start(mountedDrives)
-        @mountedDrives=mountedDrives
+    def start(expectedMachines)
+        @expectedMachines=expectedMachines
         listActiveShots()
         deleteInactiveShots()
         encodeActiveShots()
     end
 
     def listActiveShots
-        @mountedDrives.each do |machine|
-            folder= "#{@config['backup_local_base_path']}/#{machine['mountpoint']}/2_VALIDATION"
+        @expectedMachines.each do |machine|
+            folder = "#{@config['backup_local_base_path']}/#{machine['mountpoint']}/2_VALIDATION"
             Dir.glob("#{folder}/*") do |file| 
                 name = File.basename(file, File.extname(file))
                 shot = OpenStruct.new('shotName'=>name, 'path'=>folder)
@@ -54,7 +54,7 @@ class EncodeFilms
 
     def encodeShot (shot)
         cmd=<<-FOO 
-        ffmpeg -y -i #{shot['path']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_%04d.jpg -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{@config['encodedshots_path']}/#{shot['shotName']}.mp4
+        ffmpeg -r 12.5 -y -i #{shot['path']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_%04d.jpg -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{@config['encodedshots_path']}/#{shot['shotName']}.mp4
         FOO
         `#{cmd}`
     end

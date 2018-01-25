@@ -8,6 +8,7 @@ require 'json'
 config = YAML::load_file("env.config")
 
 while true
+  
   `reset`
   puts "##########################################"
   puts "SYNC STARTING #{Time.now.strftime("%d/%m/%Y %H:%M")}"
@@ -25,7 +26,7 @@ while true
   puts "__________________________________________"
   puts "ENCODING"
   encodefilm = EncodeFilms.new(config)
-  encodefilm.start(networkdrives.mountedDrives)
+  encodefilm.start(networkdrives.expectedMachines)
   puts "__________________________________________"
   puts "SENDING TO WEB"
   backup.syncToWeb

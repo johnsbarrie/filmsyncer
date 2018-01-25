@@ -5,6 +5,7 @@ require 'logger'
 
 class NetworkDrives
     include CommandRunner
+
     def initialize (config)
         @volumes_base_path=config['volumes_base_path']
         @expected_machine=config['networkpaths']
@@ -13,11 +14,14 @@ class NetworkDrives
         @drivestomount=[]
         FileUtils.mkdir_p "./log"
         @log = Logger.new('./log/network.log')
-
     end
 
     def mountedDrives
         @mountedrives
+    end
+
+    def expectedMachines
+        @expected_machine
     end
 
     def start
@@ -29,23 +33,25 @@ class NetworkDrives
         @expected_machine.each do |machine|
             mountpoint=machine['mountpoint']
             path = "#{@volumes_base_path}/#{mountpoint}/#{@inprogress_folder_name}"
-            if serverIsAvailable(machine) && resourceIsAvaible(machine) && Dir.exist?(path)
+            if machine && serverIsAvailable(machine) && resourceIsAvailable(machine) && Dir.exist?(path)
                 @mountedrives.push(machine)
             elsif
                 @drivestomount.push(machine)
             end
         end
-        
     end
 
     def mountDrives
         @drivestomount.each do |machine|
-            networkpath = createNetworkPath(machine)
-            FileUtils.mkdir_p "#{@volumes_base_path}/#{machine['mountpoint']}"
-            if serverIsAvailable(machine) && resourceIsAvaible(machine)
+            mountFolder = "#{@volumes_base_path}/#{machine['mountpoint']}"
+            FileUtils.mkdir_p mountFolder unless File.directory?(mountFolder)
+            
+            if resourceIsAvailable(machine)
                 mountMachine(machine)
             else
-                @log.warn "#{ machine['servername'] } not found on the network"
+                nofoundmsg = "#{ machine['servername'] } not found on the network"
+                puts nofoundmsg
+                @log.warn nofoundmsg
             end
         end
     end
@@ -55,24 +61,34 @@ class NetworkDrives
     end 
 
     def mountMachine machine
+        networkpath = createNetworkPath(machine)
         begin
-            runExe("mount -t smbfs #{networkpath} #{@volumes_base_path}/#{machine['mountpoint']}", 50) 
+            cmd = "mount -t smbfs #{networkpath} #{@volumes_base_path}/#{machine['mountpoint']}";
+            runExe("#{cmd}", 50)
         rescue SystemExit => e
-            @log.error "ERROR: Mounting disk command has hung for #{networkpath}"
+            msg = "ERROR: Mounting disk command has hung for #{networkpath}"
+            puts msg
+            @log.error msg
         end
     end
 
     def serverIsAvailable machine
         networkinfo = `arp -a`
-        networkinfo.include? machine['servername']
+        hasMachineBeenFound = networkinfo.include? machine['servername']
+        puts "#{machine['servername']} network detection = #{hasMachineBeenFound}"
+        return hasMachineBeenFound
     end 
 
-    def resourceIsAvaible machine
+    def resourceIsAvailable machine
         begin
-            resourcelist = runExe("smbutil view //#{machine['user']}:#{machine['password']}@#{machine['servername']}", 20)
+            cmd = "smbutil view //#{machine['user']}:#{machine['password']}@#{machine['servername']}"
+            puts "Checking for shared resource #{machine['sharedpath']} on #{machine['servername']}"
+            resourcelist = runExe(cmd, 20)
             return resourcelist.include? machine['sharedpath']
         rescue SystemExit => e
-            @log.error "ERROR: resource Availabilty script has hung for #{machine['servername']}"
+            msg = "ERROR: resource Availabilty script has hung for #{machine['servername']}"
+            puts msg
+            @log.error msg
             return false
         end
     end

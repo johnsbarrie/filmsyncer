@@ -15,7 +15,9 @@ class BackUp
             machinename = machine['mountpoint']
             fromPath=@config['volumes_base_path']
             toPath=@config['backup_local_base_path']
-            `#{constructRsyncCommand(machinename, fromPath, toPath, true)}`
+            cmd = constructRsyncCommand(machinename, fromPath, toPath, true)
+            puts "Backingup #{machine['servername']}"
+            `#{cmd}`
         end
     end
 
@@ -30,11 +32,12 @@ class BackUp
 
     def constructRsyncCommand(machinename, fromPath, toPath, delete=false)
         deleteCommand = delete ? '--delete' : ''
-        cmd = "rsync -azv #{deleteCommand} #{fromPath}/#{machinename}/ #{toPath}/#{machinename}/"
+        "rsync -azv #{deleteCommand} #{fromPath}/#{machinename}/ #{toPath}/#{machinename}/"
     end
 
     def syncToWeb()
         `rsync -azv --delete #{@config['encodedshots_path']}/ #{@config['web_shot_path']}/`
         `rsync -azv --delete #{@config['thumbnails_path']}/ #{@config['web_thumbnail_path']}/`
     end
+
 end
