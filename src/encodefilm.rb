@@ -54,13 +54,13 @@ class EncodeFilms
 
     def encodeShot (shot)
         cmd=<<-FOO 
-        ffmpeg -r 12.5 -y -i #{shot['path']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_%04d.jpg -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{@config['encodedshots_path']}/#{shot['shotName']}.mp4
+        ffmpeg -r 12.5 -y -i #{shot['path']}/#{shot['shotName']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_%04d.jpg -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{@config['encodedshots_path']}/#{shot['shotName']}.mp4
         FOO
         `#{cmd}`
     end
 
     def encodeThumbnail (shot)
-        image_path="#{shot['path']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_0001.jpg"
+        image_path="#{shot['path']}/#{shot['shotName']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_01/#{shot['shotName']}_01_X1/#{shot['shotName']}_01_X1_0001.jpg"
         thumbnails_path="#{@config['thumbnails_path']}/#{shot['shotName']}.jpg"
         cmd="convert #{image_path} -resize 320x320 #{thumbnails_path}"
         `#{cmd}`

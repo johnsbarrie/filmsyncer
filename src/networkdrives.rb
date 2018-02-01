@@ -64,6 +64,7 @@ class NetworkDrives
         networkpath = createNetworkPath(machine)
         begin
             cmd = "mount -t smbfs #{networkpath} #{@volumes_base_path}/#{machine['mountpoint']}";
+            puts cmd
             runExe("#{cmd}", 50)
         rescue SystemExit => e
             msg = "ERROR: Mounting disk command has hung for #{networkpath}"
