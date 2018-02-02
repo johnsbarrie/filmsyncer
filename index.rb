@@ -14,7 +14,6 @@ while true
   puts "SYNC STARTING #{Time.now.strftime("%d/%m/%Y %H:%M")}"
   puts 
   puts "##########################################"
-
   networkdrives = NetworkDrives.new(config)
   
   puts "BOOTING Network"

@@ -9,7 +9,8 @@ class NetworkDrives
     def initialize (config)
         @volumes_base_path=config['volumes_base_path']
         @expected_machine=config['networkpaths']
-        @inprogress_folder_name='1_INPROGRESS'
+        @validation_folder= config['validation_folder']
+        @data_folder=config['data_folder']
         @mountedrives=[]
         @drivestomount=[]
         FileUtils.mkdir_p "./log"
@@ -32,7 +33,8 @@ class NetworkDrives
     def listMountedDrives
         @expected_machine.each do |machine|
             mountpoint=machine['mountpoint']
-            path = "#{@volumes_base_path}/#{mountpoint}/#{@inprogress_folder_name}"
+            
+            path = "#{@data_folder}#{@volumes_base_path}/#{mountpoint}/#{@validation_folder}"
             if machine && serverIsAvailable(machine) && resourceIsAvailable(machine) && Dir.exist?(path)
                 @mountedrives.push(machine)
             elsif
@@ -43,7 +45,7 @@ class NetworkDrives
 
     def mountDrives
         @drivestomount.each do |machine|
-            mountFolder = "#{@volumes_base_path}/#{machine['mountpoint']}"
+            mountFolder = "#{@data_folder}#{@volumes_base_path}/#{machine['mountpoint']}"
             FileUtils.mkdir_p mountFolder unless File.directory?(mountFolder)
             
             if resourceIsAvailable(machine)
@@ -63,7 +65,7 @@ class NetworkDrives
     def mountMachine machine
         networkpath = createNetworkPath(machine)
         begin
-            cmd = "mount -t smbfs #{networkpath} #{@volumes_base_path}/#{machine['mountpoint']}";
+            cmd = "mount -t smbfs #{networkpath} #{@data_folder}#{@volumes_base_path}/#{machine['mountpoint']}";
             puts cmd
             runExe("#{cmd}", 50)
         rescue SystemExit => e
