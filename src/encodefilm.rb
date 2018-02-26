@@ -56,7 +56,7 @@ class EncodeFilms
         sequencePath = jpgSequencePath(shot['path'], shot['shotName'], takeName)
         output= ffmpegOutputPath(shot['shotName'], takeName)
         cmd=<<-FOO 
-            ffmpeg -r 24 -y -i #{sequencePath} -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{output}
+            ffmpeg -y -i #{sequencePath} -r 24 -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{output}
         FOO
         puts cmd
         `#{cmd}`
@@ -88,8 +88,9 @@ class EncodeFilms
     def deleteInactiveShots
         Dir.glob("#{@config['data_folder']}#{@config['encodedshots_path']}/*") do |file| 
             name = File.basename(file, File.extname(file))
+
             result = @activeShots.select do |struct|
-                struct['shotName'] === name
+                file.include? name
             end
     
             if result.empty? 
