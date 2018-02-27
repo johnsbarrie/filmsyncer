@@ -88,11 +88,10 @@ class EncodeFilms
     def deleteInactiveShots
         Dir.glob("#{@config['data_folder']}#{@config['encodedshots_path']}/*") do |file| 
             name = File.basename(file, File.extname(file))
-
             result = @activeShots.select do |struct|
-                file.include? name
+                name.include? struct['shotName']
             end
-    
+            
             if result.empty? 
                 File.delete file
                 File.delete "#{@config['data_folder']}#{@config['thumbnails_path']}/#{name}.jpg"
