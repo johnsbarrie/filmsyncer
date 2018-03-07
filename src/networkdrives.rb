@@ -1,4 +1,4 @@
-require './src/commandrunner'
+require './src/helpers/commandrunner'
 require 'fileutils'
 require 'timeout'
 require 'logger'
