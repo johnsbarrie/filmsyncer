@@ -53,7 +53,7 @@ module CommandRunner
   
   def watermarkCmd(imagepath, outputpath, imageindex)
     imageheight = `identify -format "%h" #{imagepath}`.to_f
-    pointsize = 20
+    pointsize = 40
     textOffset = imageheight/2 - (pointsize / 2)
     offsetCoordinates = OpenStruct.new('x'=>0, 'y'=>100)
     `convert #{imagepath} -pointsize #{pointsize}  -gravity east -draw 'fill black text 1,#{textOffset-1} "#{imageindex}" fill white text 0,#{textOffset}  "#{imageindex}" ' #{outputpath}`
