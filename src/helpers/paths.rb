@@ -14,6 +14,10 @@ module Paths
   def takeX1ImagesPath (shot, takename)
     "#{takePath(shot, takename)}/#{shot['shotName']}_#{takename}_X1/"
   end
+
+  def takeConformedLinkFolderPath (shot, takename)
+    "#{takePath(shot, takename)}/CONFORMED/"
+  end
   
   def takePath (shot, takename)
     "#{shot['path']}/#{shot['shotName']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_#{takename}"

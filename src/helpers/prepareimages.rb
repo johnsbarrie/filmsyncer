@@ -46,11 +46,10 @@ module PrepareImages
     return takeXMLObj
   end
 
-  def createSymlinks(sylinkInfo, takePath)
-    directory_name = "#{takePath}/CONFORMED"
-    Dir.mkdir(directory_name) unless File.exists?(directory_name)
+  def createSymlinks(sylinkInfo, takeConformedLinkPath)
+    Dir.mkdir(takeConformedLinkPath) unless File.exists?(takeConformedLinkPath)
     sylinkInfo.each do |linkinfo|
-      linkpath = "#{directory_name}/#{linkinfo[:linkName]}"
+      linkpath = "#{takeConformedLinkPath}/#{linkinfo[:linkName]}"
       filepath = linkinfo[:imagePath]
       File.symlink(filepath, linkpath)
     end
@@ -58,10 +57,11 @@ module PrepareImages
 
   def createTakeSequence(shot, takeName)
     takeXMLInfo = readXML(shot, takeName)
-    createSymlinks(takeXMLInfo[:symLinkInfo], takePath(shot, takeName))
+    createSymlinks(takeXMLInfo[:symLinkInfo], takeConformedLinkFolderPath(shot, takeName))
     folderPath = croppedImageDataPath(shot, takeName)
     FileUtils.mkdir_p(folderPath) unless Dir.exist?(folderPath)
-    Dir.glob("#{takeX1ImagesPath(shot, takeName)}*.jpg") do |imagepath|
+    Dir.glob("#{takeConformedLinkFolderPath(shot, takeName)}*.jpg") do |imagepath|
+      puts imagepath
       croppedImage = "#{folderPath}/#{suffixedPath(imagepath, 'cropped')}"
       watermarkedImage = "#{folderPath}/#{suffixedPath(imagepath, 'watermarked')}"
       fileIndex(imagepath)
