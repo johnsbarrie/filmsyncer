@@ -14,7 +14,7 @@ module CommandRunner
 
   def encodeShot (shot, takeName)
     sequencePath = jpgSequencePath(shot, takeName)
-    output= ffmpegOutputPath(shot['shotName'], takeName)
+    output = ffmpegOutputPath(shot['shotName'], takeName)
     cmd=<<-FOO 
         ffmpeg -y -i #{sequencePath} -r 24 -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{output}
     FOO
@@ -40,7 +40,7 @@ module CommandRunner
     width = imagewidth-((pushinProportions * 2) * imagewidth)
     height = imageheight-((pushinProportions * 2) * imageheight)
   
-    proportionalHeight = width/takeXMLInfo[:aspectMask]
+    proportionalHeight = width/takeXMLInfo[:aspectMask].to_f
   
     horizontalCropPoint = ((pushinProportions) * imagewidth)
     verticalCropPoint = ((pushinProportions) * imageheight)

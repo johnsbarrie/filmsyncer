@@ -3,6 +3,14 @@ module Paths
     "#{croppedImageDataPath(shot, takename)}#{shot['shotName']}_#{takename}_X1_%04d_watermarked.jpg"
   end
 
+  def takeX1SingleImageName (shot, takename, imagenum)
+    "#{shot['shotName']}_#{takename}_X1_#{imagenum}.jpg"
+  end
+
+  def takeX1SingleImagePath (shot, takename, imagenum)
+    "#{takePath(shot, takename)}/#{shot['shotName']}_#{takename}_X1/#{ takeX1SingleImageName(shot, takename, imagenum) }"
+  end
+
   def takeX1ImagesPath (shot, takename)
     "#{takePath(shot, takename)}/#{shot['shotName']}_#{takename}_X1/"
   end
