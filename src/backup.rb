@@ -32,7 +32,7 @@ class BackUp
 
     def constructRsyncCommand(machinename, fromPath, toPath, delete=false)
         deleteCommand = delete ? '--delete' : ''
-        "rsync -azv --include '*/' --include '*.jpg' --include '*.xml' --exclude '*' #{deleteCommand} #{fromPath} #{toPath}"
+        "rsync -azv --include '*/' --include '*.jpg' --include '*.mov' --include '*.xml' --exclude '*' #{deleteCommand} #{fromPath} #{toPath}"
     end
 
     def syncToWeb()

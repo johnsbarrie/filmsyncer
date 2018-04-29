@@ -18,9 +18,13 @@ module Paths
   def takeConformedLinkFolderPath (shot, takename)
     "#{takePath(shot, takename)}/CONFORMED/"
   end
+
+  def packAnimPath (shot, takename)
+    "#{shot['path']}/#{shot['shotName']}/"
+  end
   
   def takePath (shot, takename)
-    "#{shot['path']}/#{shot['shotName']}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_#{takename}"
+    "#{packAnimPath(shot, takename)}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_#{takename}"
   end
 
   def takeXMLPath (shot, takeName)
@@ -41,6 +45,14 @@ module Paths
 
   def croppedImageDataPath (shot, takeName)
     "#{croppedDataPath()}#{shot['shotName']}_Take_#{takeName}/"
+  end
+
+  def soundFolderPath
+    "#{@config['data_folder']}#{@config['sound_path']}/"
+  end
+
+  def soundOutputFolderPath (shot, takeName)
+    "#{soundFolderPath()}#{shot}_#{takeName}.mp3"
   end
 
   def firstImagePath (shot, takeName)

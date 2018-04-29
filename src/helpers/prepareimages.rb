@@ -8,9 +8,6 @@ module PrepareImages
   include REXML
   include CommandRunner
 
-  def prepareImageSequence(shot, takeName)
-    createTakeSequence(shot, takeName)
-  end
 
   def readXML(shot, takeName)
     file = File.new(takeXMLPath(shot, takeName))
@@ -25,6 +22,17 @@ module PrepareImages
           'linkName'=>takeX1SingleImageName(shot, takeName, "%04d" % element.attributes['vframe'].to_i)
         )    
       )
+    }
+
+    #doc.elements.each("scen:scene/scen:audioFile") { |audioFile| 
+     # puts audioFile.attributes['soundFile']
+    #}
+    soundFilePath=''
+    doc.elements.each("scen:scene/scen:audioTrack") { |audioTrack|
+      audioTrack.elements.each("scen:segment") {|segment|
+        soundFilePath = "#{packAnimPath(shot, takeName)}#{segment.attributes['soundFile']}"
+        break;
+       }
     }
 
     attribs = doc.root.attributes
@@ -43,6 +51,7 @@ module PrepareImages
     takeXMLObj[:maskOffsetVertical] = 0 if takeXMLObj[:maskOffsetVertical].nil? || takeXMLObj[:maskOffsetVertical].empty? 
     takeXMLObj[:maskOffsetHorizontal] = 0 if takeXMLObj[:maskOffsetHorizontal].nil? || takeXMLObj[:maskOffsetHorizontal].empty? 
     takeXMLObj[:symLinkInfo] = imageArray
+    takeXMLObj[:soundFilePath] = soundFilePath
     return takeXMLObj
   end
 
@@ -55,11 +64,15 @@ module PrepareImages
     end
   end
 
-  def createTakeSequence(shot, takeName)
+  def prepareImageSequence(shot, takeName)
     takeXMLInfo = readXML(shot, takeName)
     createSymlinks(takeXMLInfo[:symLinkInfo], takeConformedLinkFolderPath(shot, takeName))
     folderPath = croppedImageDataPath(shot, takeName)
     FileUtils.mkdir_p(folderPath) unless Dir.exist?(folderPath)
+    FileUtils.mkdir_p(soundFolderPath) unless Dir.exist?(soundFolderPath)
+    
+    extractSound(takeXMLInfo[:soundFilePath], soundOutputFolderPath(shot['shotName'], takeName))
+
     Dir.glob("#{takeConformedLinkFolderPath(shot, takeName)}*.jpg") do |imagepath|
       puts imagepath
       croppedImage = "#{folderPath}/#{suffixedPath(imagepath, 'cropped')}"

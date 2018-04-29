@@ -15,10 +15,21 @@ module CommandRunner
   def encodeShot (shot, takeName)
     sequencePath = jpgSequencePath(shot, takeName)
     output = ffmpegOutputPath(shot['shotName'], takeName)
+    soundOutput = soundOutputFolderPath(shot['shotName'], takeName) 
+    soundOutputCommand = File.exists?(soundOutput) ? "-i #{soundOutput} -map 0:v -map 1:a" : ""
+
     cmd=<<-FOO 
-        ffmpeg -y -i #{sequencePath} -r 24 -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{output}
+        ffmpeg -y -i #{sequencePath} #{soundOutputCommand} -r 24 -c:v libx264 -pix_fmt yuv420p -vf scale=1920:-2 #{output}
     FOO
-    #puts cmd
+    puts cmd
+    `#{cmd}`
+  end
+
+  def extractSound (soundFile, soundOutputFile)    
+    cmd=<<-FOO 
+      ffmpeg -y -i #{soundFile} -q:a 0 -map a #{soundOutputFile}
+    FOO
+    puts cmd
     `#{cmd}`
   end
 
