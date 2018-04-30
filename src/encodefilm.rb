@@ -48,11 +48,12 @@ class EncodeFilms
                     if takeHasAtLeastImage(shot, takeName)
                         puts "preparing Images #{shot['shotName']}_#{takeName}"
                         prepareImageSequence(shot, takeName)
+                        
                         puts "encoding #{shot['shotName']}_#{takeName}"
                         encodeShot(shot, takeName)
                         puts "thumbnail #{shot['shotName']}_#{takeName}"
                         encodeThumbnail(shot, takeName)
-                        cleanupCroppedImageData()
+                        cleanupData()
                     end
                 end
                 takeindex = takeindex + 1;

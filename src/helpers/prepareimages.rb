@@ -89,8 +89,9 @@ module PrepareImages
     end
   end
 
-  def cleanupCroppedImageData
+  def cleanupData
     FileUtils.rm_rf(croppedDataPath()) 
+    FileUtils.rm_rf(soundFolderPath()) 
   end
 
 end
