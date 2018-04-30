@@ -3,6 +3,7 @@ require 'ostruct'
 require 'fileutils'
 require './src/helpers/paths'
 require './src/helpers/commandrunner'
+
 module PrepareImages
   include Paths
   include REXML
@@ -14,19 +15,24 @@ module PrepareImages
     doc = Document.new(file)
     
     imageArray = []
-
+    framenumber=0
     doc.elements.each("scen:scene/scen:edl/scen:vframe") { |element| 
+      realX1path = takeX1SingleImagePath(shot, takeName, "%04d" % element.attributes['file'].to_i)
+      
+      if !File.exists? realX1path 
+        puts "Hidden files #{realX1path} "
+        next
+      end
+      
+      framenumber = framenumber + 1
       imageArray.push(
         OpenStruct.new(
           'imagePath'=>takeX1SingleImagePath(shot, takeName, "%04d" % element.attributes['file'].to_i), 
-          'linkName'=>takeX1SingleImageName(shot, takeName, "%04d" % element.attributes['vframe'].to_i)
+          'linkName'=>takeX1SingleImageName(shot, takeName, "%04d" % framenumber)
         )    
       )
     }
 
-    #doc.elements.each("scen:scene/scen:audioFile") { |audioFile| 
-     # puts audioFile.attributes['soundFile']
-    #}
     soundFilePath=''
     doc.elements.each("scen:scene/scen:audioTrack") { |audioTrack|
       audioTrack.elements.each("scen:segment") {|segment|
