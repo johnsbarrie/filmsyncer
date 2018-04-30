@@ -35,7 +35,9 @@ class NetworkDrives
             mountpoint=machine['mountpoint']
             
             path = "#{@data_folder}#{@volumes_base_path}/#{mountpoint}/#{@validation_folder}"
-            if machine && serverIsAvailable(machine) && resourceIsAvailable(machine) && Dir.exist?(path)
+            #if machine && serverIsAvailable(machine) && resourceIsAvailable(machine) && Dir.exist?(path)
+            if machine && resourceIsAvailable(machine) && Dir.exist?(path)
+
                 @mountedrives.push(machine)
             elsif
                 @drivestomount.push(machine)
