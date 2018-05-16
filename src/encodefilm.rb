@@ -29,12 +29,34 @@ class EncodeFilms
         end
     end
 
+    def createTakeArray(shot)
+        shotpath = shotPath(shot)
+        validTakes=[]
+        Dir.glob("#{shotpath}*") do |file| 
+            #TODO regular expression
+            potentialFileName = File.basename(file)
+            
+            if (potentialFileName.match(/^[A-Z]{2}[0-9]+-{1}[0-9]+_[0-9]+_Take_[A-Z]-[A-Z]{2}-V[0-9]{1}[A-Z]?$/))
+                #puts "potentialFileName #{potentialFileName}"
+                validTakes.push(potentialFileName)
+            end
+        end 
+        return validTakes
+    end
+
     def encodeActiveShots
         @activeShots.each do |shot|
             takeindex = 0;
-            while true
-                takeName="A-BG-V#{takeindex}"
-                shotPath = takePath(shot, takeName)
+            validTakes = createTakeArray(shot)
+            puts "validTakes #{validTakes}"
+            validTakes.each { |takeName| 
+            
+                shotPath = "#{shotPath(shot)}#{takeName}"
+                takeName = File.basename(shotPath)
+                
+                shot_prefix = "#{shot['shotName']}_Take_"
+                takeName = takeName[shot_prefix.length, takeName.length]
+                
                 shotExists = File.exists? shotPath
 
                 if !shotExists
@@ -43,7 +65,7 @@ class EncodeFilms
                 end
 
                 encodedShotPath = ffmpegOutputPath(shot['shotName'], takeName)
-
+                
                 if !File.exists? encodedShotPath
                     if takeHasAtLeastImage(shot, takeName)
                         puts "preparing Images #{shot['shotName']}_#{takeName}"
@@ -57,7 +79,7 @@ class EncodeFilms
                     end
                 end
                 takeindex = takeindex + 1;
-            end
+            }
         end
     end
     

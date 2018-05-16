@@ -19,12 +19,16 @@ module Paths
     "#{takePath(shot, takename)}/CONFORMED/"
   end
 
-  def packAnimPath (shot, takename)
+  def packAnimPath (shot)
     "#{shot['path']}/#{shot['shotName']}/"
+  end
+
+  def shotPath (shot)
+    "#{packAnimPath(shot)}/#{shot['shotName']}.dgn/"
   end
   
   def takePath (shot, takename)
-    "#{packAnimPath(shot, takename)}/#{shot['shotName']}.dgn/#{shot['shotName']}_Take_#{takename}"
+    "#{shotPath(shot)}#{shot['shotName']}_Take_#{takename}"
   end
 
   def takeXMLPath (shot, takeName)
@@ -32,7 +36,7 @@ module Paths
   end
 
   def ffmpegOutputPath (shotName, takeName)
-    "#{@config['data_folder']}#{@config['encodedshots_path']}/#{shotName}_#{takeName}.mp4"
+    "#{@config['data_folder']}#{@config['encodedshots_path']}/#{takeName}.mp4"
   end
 
   def thumbnailPath (shot, takeName)
