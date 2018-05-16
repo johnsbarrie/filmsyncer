@@ -36,7 +36,7 @@ module Paths
   end
 
   def ffmpegOutputPath (shotName, takeName)
-    "#{@config['data_folder']}#{@config['encodedshots_path']}/#{takeName}.mp4"
+    "#{@config['data_folder']}#{@config['encodedshots_path']}/#{shotName}_#{takeName}.mp4"
   end
 
   def thumbnailPath (shot, takeName)

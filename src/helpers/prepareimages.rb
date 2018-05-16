@@ -9,7 +9,6 @@ module PrepareImages
   include REXML
   include CommandRunner
 
-
   def readXML(shot, takeName)
     file = File.new(takeXMLPath(shot, takeName))
     doc = Document.new(file)
@@ -36,7 +35,7 @@ module PrepareImages
     soundFilePath=''
     doc.elements.each("scen:scene/scen:audioTrack") { |audioTrack|
       audioTrack.elements.each("scen:segment") {|segment|
-        soundFilePath = "#{packAnimPath(shot, takeName)}#{segment.attributes['soundFile']}"
+        soundFilePath = "#{packAnimPath(shot)}#{segment.attributes['soundFile']}"
         break;
        }
     }
