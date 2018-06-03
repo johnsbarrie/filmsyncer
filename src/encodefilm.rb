@@ -36,7 +36,7 @@ class EncodeFilms
             #TODO regular expression
             potentialFileName = File.basename(file)
             
-            if (potentialFileName.match(/^[A-Z]{2}[0-9]+-{1}[0-9]+_[0-9]+_Take_[A-Z]-[A-Z]{2}-V[0-9]{1}[A-Z]?$/))
+            if (potentialFileName.match(/^[A-Z]{2}[0-9]+-{1}[0-9]+_[0-9]+[A-Z]{0,2}_Take_[A-Z]-[A-Z]{2}-V[0-90]{1}[A-Z]?$/))
                 #puts "potentialFileName #{potentialFileName}"
                 validTakes.push(potentialFileName)
             end
@@ -48,7 +48,7 @@ class EncodeFilms
         @activeShots.each do |shot|
             takeindex = 0;
             validTakes = createTakeArray(shot)
-            puts "validTakes #{validTakes}"
+            #puts "validTakes #{validTakes}"
             validTakes.each { |takeName| 
             
                 shotPath = "#{shotPath(shot)}#{takeName}"
@@ -65,7 +65,7 @@ class EncodeFilms
                 end
 
                 encodedShotPath = ffmpegOutputPath(shot['shotName'], takeName)
-                
+                puts encodedShotPath
                 if !File.exists? encodedShotPath
                     if takeHasAtLeastImage(shot, takeName)
                         puts "preparing Images #{shot['shotName']}_#{takeName}"
