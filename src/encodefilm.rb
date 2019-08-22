@@ -12,6 +12,7 @@ class EncodeFilms
     end
 
     def start(expectedMachines)
+        
         @expectedMachines=expectedMachines
         listActiveShots()
         deleteInactiveShots()
